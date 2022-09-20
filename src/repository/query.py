@@ -5,7 +5,7 @@ class query:
 
     def getProduct(self, productId):
         requiredProduct = {}
-        file = open('D:/hackathon/loadingService/src/repository/data.json', 'r')
+        file = open('../repository/data.json', 'r')
         products = json.load(file)
         for product in products:
             if product['productId'] == productId:
@@ -14,7 +14,7 @@ class query:
         return requiredProduct
 
     def addProduct(self, newProduct):
-        file = open('D:/hackathon/loadingService/src/repository/data.json', 'r')
+        file = open('../repository/data.json', 'r')
         data = json.load(file)
         file.close()
         index = -1
@@ -25,7 +25,7 @@ class query:
             data.pop(index)
         data.append(newProduct)
         data = json.dumps(data)
-        file = open('D:/hackathon/loadingService/src/repository/data.json', 'w')
+        file = open('../repository/data.json', 'w')
         file.write(data)
         file.close()
         return data
