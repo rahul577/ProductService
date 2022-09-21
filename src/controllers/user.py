@@ -5,6 +5,9 @@ import requests
 
 class User:
 
+    DEEPLINK_PREFIX = "ms-windows-store://pdp/?productId="
+    URL = "https://localhost:44372/NotificationService"
+
     def __init__(self):
         self.userQueryInstance = userQuery();
 
@@ -44,24 +47,24 @@ class User:
             newUser['providers'][provider] = [productId]
             return self.userQueryInstance.addUser(newUser)
 
-
-    def sendNotificationUsingGenre(self, genres, notification):
+    def sendNotificationUsingGenre(self, genres, movieName, productId):
         users = self.userQueryInstance.getAllUsers()
-        PARAMS = {'genre': genres}
-        URL = "https://localhost:44372/NotificationService"
-        r = requests.get(url=URL, verify=False, params = PARAMS)
         for user in users:
             diff = list(set(genres) & set(user['genres']))
             if diff:
-                print(genres)
-                print(user['userId'])
+                deepLink = self.DEEPLINK_PREFIX + productId
+                notificationMessage = movieName + " has been added in " + ', '.join(genres)
+                data = {'notificationMessage': notificationMessage, 'deepLink': deepLink}
+                r = requests.post(url=self.URL, verify=False, data=data)
 
-    def sendNotificationUsingProvider(self, providers, productId, notification):
+    def sendNotificationUsingProvider(self, providers, productId, movieName):
         users = self.userQueryInstance.getAllUsers()
         for user in users:
             for provider in providers:
                 if productId in user["providers"][provider]:
-                    print(user['userId'])
-
+                    notificationMessage = movieName + " is now available on " + provider
+                    deepLink = self.DEEPLINK_PREFIX + productId
+                    data = {'notificationMessage': notificationMessage, 'deepLink': deepLink}
+                    r = requests.post(url=self.URL, verify=False, data=data)
 
 

@@ -20,11 +20,13 @@ class Ingestion:
         if existingProduct:
             # check if new genres are added
             newGenres = list(set(product['genres']) - set(existingProduct['genres']) )
-            self.userInstance.sendNotificationUsingGenre(newGenres, "")
+            if newGenres:
+                self.userInstance.sendNotificationUsingGenre(newGenres, product['movieName'], product['productId'])
 
             # check if new provider is added
             newProviders = list(set(product['providers']) - set(existingProduct['providers']) )
-            self.userInstance.sendNotificationUsingProvider(newProviders, product['productId'], "")
+            if newProviders:
+                self.userInstance.sendNotificationUsingProvider(newProviders, product['productId'], product['movieName'])
         else:
-            self.userInstance.sendNotificationUsingGenre(product['genres'], "")
+            self.userInstance.sendNotificationUsingGenre(product['genres'], product['movieName'], product['productId'])
         return self.queryInstance.addProduct(product)
